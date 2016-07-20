@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
 	<title>Swagger Monkey</title>
-	<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/angular-1.5.7/angular.min.js"></script>
-	<script type="text/javascript" src="js/angular-1.5.7/angular-animate.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/angular-animate.min.js"></script>
 	<link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
-	<link type="text/css" href="css/swagger-monkey.css" rel="stylesheet">
 	<link type="text/css" href="css/buttons.css" rel="stylesheet">
+	<link type="text/css" href="css/swagger-monkey.css" rel="stylesheet">
 </head>
 <body>
     <div class="jumbotron" id="level-1">
@@ -87,13 +87,13 @@
 
                 <p>
                     <div class="repo-list-stats">      
-                       <button class="btn btn-link button-borderless"><i class="glyphicon glyphicon-edit"></i></button>
+                       <button class="button button-circle button-tiny"><span class="glyphicon glyphicon-edit"></span></button>
                     </div>
-                    <a href="http://127.0.0.1:8080">{{urlinfo.url}}</a> 
+                    <a href="{{urlinfo.url}}" target="_blank" ng-click="addVote(urlinfo)">{{urlinfo.url}}</a> 
                 </p>   
                 <p>
                     <div class="repo-list-stats">      
-                       <button class="btn button-borderless"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button class="button button-circle button-tiny" ng-click="removeUrl(urlinfo)"><span class="glyphicon glyphicon-remove"></span></button>
                     </div>
                     {{urlinfo.description}}
                 </p>
@@ -135,7 +135,7 @@
             $scope.confirm = function() {
                 $http({
                     method  : 'POST',
-                    url     : 'http://localhost:1337/10.62.57.242:5000/urls',
+                    url     : 'http://127.0.0.1:5000/urls',
                     data    : $scope.urlinfo, 
                     headers : {'Content-Type': 'application/json'} 
                 })
@@ -150,9 +150,32 @@
 
         var info_app = angular.module('infos', []);
         info_app.controller('infoCtrl', function($scope, $http) {
-            $http.get("http://localhost:1337/10.62.57.242:5000/urls")
+            $http.get("http://127.0.0.1:5000/urls")
             .success(function(response) {$scope.urlinfos = response;})
             .error(function(response) {$scope.urlinfos = []});
+
+            $scope.removeUrl = function(urlinfo) {
+                $http({
+                    method  : 'DELETE',
+                    url     : 'http://127.0.0.1:5000/url/' + urlinfo.key,
+                })
+                .success(function(data) {
+                })
+                .error(function(data) {
+                });
+            };
+
+            $scope.addVote = function(urlinfo) {
+                $http({
+                    method  : 'PUT',
+                    url     : 'http://127.0.0.1:5000/votes/' + urlinfo.key,
+                })
+                .success(function(data) {
+                })
+                .error(function(data) {
+                });
+            };
+
         });
         angular.bootstrap(document.getElementById("myInfo"), ['infos']);
     </script>

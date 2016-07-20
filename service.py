@@ -1,92 +1,127 @@
 from contextlib import closing
-from flask import Flask, g, jsonify, redirect, url_for, flash
+from flask import Flask, g, jsonify, flash
 from flask import request
+from flask_cors import CORS, cross_origin
 import sqlite3
 
 DATABASE = 'swagger.db'
 app = Flask(__name__)
 app.config.from_object(__name__)
+CORS(app)
 
 
 @app.route('/urls', methods=['GET'])
 def urls_get_service():
-    urls = []
-    infos = query_db('select * from urlinfos order by key')
-    for info in infos:
+    try:
+        urls = []
+        infos = query_db('select * from urlinfos order by key')
+        for info in infos:
+            url = {}
+            url['key'] = info[0]
+            url['title'] = info[1]
+            url['url'] = info[2]
+            url['description'] = info[3]
+            url['vote'] = info[4]
+            urls.append(url)
+        return jsonify(urls)
+    except Exception as e:
+        flash(e.message)
+        return False
+
+
+@app.route('/urls', methods=['POST'])
+def urls_post_service():
+    try:
+        update_db('insert into urlinfos (title, url, description) values (?, ?, ?)',
+              [request.json['title'], request.json['url'], request.json['description']])
+        return 'success'
+    except Exception as e:
+        flash(e.message)
+        return False
+
+@app.route('/urls', methods=['DELETE'])
+def urls_delete_service():
+    try:
+        delete_db('delete from urlinfos')
+        return 'success'
+    except Exception as e:
+        flash(e.args)
+        return False
+
+@app.route('/url/<int:key>', methods=['GET'])
+def url_get_service(key):
+    try:
+        info = query_db('select * from urlinfos where key = ?', [key], one=True)
         url = {}
         url['key'] = info[0]
         url['title'] = info[1]
         url['url'] = info[2]
         url['description'] = info[3]
         url['vote'] = info[4]
-        urls.append(url)
-    return jsonify({'UrlInfo': urls})
 
-
-@app.route('/urls', methods=['POST'])
-def urls_post_service():
-    update_db('insert into urlinfos (title, url, description) values (?, ?, ?)',
-              [request.json['title'], request.json['url'], request.json['description']])
-    return 'success'
-
-
-@app.route('/urls', methods=['DELETE'])
-def urls_delete_service():
-    delete_db('delete from urlinfos')
-
-    return 'success'
-
-
-@app.route('/url/<int:key>', methods=['GET'])
-def url_get_service(key):
-    info = query_db('select * from urlinfos where key = ?', [key], one=True)
-
-    url = {}
-    url['key'] = info[0]
-    url['title'] = info[1]
-    url['url'] = info[2]
-    url['description'] = info[3]
-    url['vote'] = info[4]
-
-    return jsonify({'UrlInfo': url})
-
+        return jsonify(url)
+    except Exception as e:
+        flash(e.args)
+        return False
 
 @app.route('/url/<int:key>', methods=['PUT'])
 def url_put_service(key):
-    update_db('update urlinfos set title=?, url=?, description=?, vote=? where key = ?',
+    try:
+        update_db('update urlinfos set title=?, url=?, description=?, vote=? where key = ?',
               [request.json['title'], request.json['url'], request.json['description'],
                request.json['vote'], key])
-    return 'success'
-
+        return 'success'
+    except Exception as e:
+        flash(e.args)
+        return False
 
 @app.route('/url/<int:key>', methods=['DELETE'])
 def url_delete_service(key):
-    res = delete_db('delete from urlinfos where key = ?', [key])
+    try:
+        delete_db('delete from urlinfos where key = ?', [key])
+        return 'success'
+    except Exception:
+        return False
 
-    return 'success'
+@app.route('/votes/<int:key>', methods=['PUT'])
+def url_put_vote_service(key):
+    try:
+        update_db('update urlinfos set vote = title + 1 where key = ?', [key])
+        return 'success'
+    except Exception:
+        return False
 
 
 def update_db(update, args):
-    res = g.db.execute(update, args)
-    if res is None:
-        flash('fail to update')
-    g.db.commit()
-    return res
+    try:
+        res = g.db.execute(update, args)
+        if res is None:
+            flash('fail to update')
+        g.db.commit()
+        return res
+    except Exception as e:
+        raise e
 
 
 def delete_db(delete, args):
-    res = g.db.execute(delete, args)
-    if res is None:
-        flash('fail to delete')
-    g.db.commit()
-    return res
+    try:
+        res = g.db.execute(delete, args)
+        if res is None:
+            flash('fail to delete')
+        g.db.commit()
+        return res
+    except Exception as e:
+        raise e
 
 
 def query_db(query, args=(), one=False):
-    cur = g.db.execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+    try:
+        cur = g.db.execute(query, args)
+        rv = cur.fetchall()
+        cur.close()
+        return (rv[0] if rv else None) if one else rv
+    except Exception as e:
+        raise e
 
 
 @app.before_request
