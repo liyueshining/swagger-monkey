@@ -4,7 +4,7 @@ This is a python Restful service based on flask.
 ***
   First copy this repo into your disk.
   ```bash
-   git@gitlab.zte.com.cn:tlcop-sh/swagger-monkey-python-flask.git
+   git@github.com:liyueshining/swagger-parrot.git
   ```
   Then be sure you have installed python 2.7.8, this project is based on this version.
   pip is highly recommended to be install. because when you install flask by pip,it can install libraries which flaskdepends on automatically.
