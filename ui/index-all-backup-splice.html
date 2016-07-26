@@ -177,8 +177,9 @@
                     headers : {'Content-Type': 'application/json'} 
                 })
                 .success(function(data) {
-                	console.log(data)
+                    console.log(data)
                     $scope.urlinfos.splice(0, 0, data);
+                    $scope.urlinfo = {}
                 })
                 .error(function(data) {
                     $scope.message = data.message;
