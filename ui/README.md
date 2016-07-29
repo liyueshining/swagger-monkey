@@ -1,36 +1,48 @@
 ## UI学习总结
+
 ###  使用的框架和技术
-  * jquery
-  * bootstrap
-  * angular
-  * angular-ui-bootstrap
+  
+* jquery
+  
+* bootstrap
+  
+* angular
+  
+* angular-ui-bootstrap
+
 ###  详细说明
-  1. bootstrap大屏幕
+  
+1. bootstrap大屏幕
     
         首页使用大屏幕 突出主题，使用bootstrap css jumbotron
 
-  2. bootstrap折叠框
+  
+2. bootstrap折叠框
   
         大屏幕中添加按钮 实现折叠框的功能。collapse
 
-  3. bootstrap 表单
+  
+3. bootstrap 表单
         
         bootstrap css form-horizontal form-group col-sm-10 form-control
         这些bootstrap样式 可以使表单看起来更美观。表单中的每个input
         还可以合angular的ng-model结合，将值和模型绑定。
         e.g ng-model="object.title" 表单提交的按钮可以和ng-click绑定处理方法，
         e.g ng-click="confirm()" 然后在script中实现confirm()方法。
-  4. bootstrap 输入框组
+  
+4. bootstrap 输入框组
   
         input-group input-group-addon 
 
-  5. angular list
+  
+5. angular list
         自动生成list内容 可以使用angular 的 ng-repeat，
         可以实现list的过滤，排序以及协助分页，e.g. ng-repeat="urlinfo in
         urlinfos | filter:query |
         orderBy:['-vote']|paging:page.index:page.size" （-加断线是倒序） 
 
-  6. angular 模态框
+  
+6. angular 模态框
         
         angular modal, angular-ui-bootstrap提供的关于模态框的实现可以使用 
         ```javascript
@@ -87,7 +99,8 @@
 
         });
         ```    
-  7. angular 分页
+  
+7. angular 分页
         angular uib-pagination 有对分页的默认实现
         ```html
         <ul uib-pagination  total-items="urlinfos | filter:query | size" ng-model="page.index" max-size="5"
