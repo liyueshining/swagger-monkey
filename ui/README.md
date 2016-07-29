@@ -44,8 +44,9 @@
   
 6. angular 模态框
         
-        angular modal, angular-ui-bootstrap提供的关于模态框的实现可以使用 
-        ```javascript
+      angular modal, angular-ui-bootstrap提供的关于模态框的实现可以使用
+
+      ```javascript
         var info_app = angular.module('infos', ['ui.bootstrap']);
         info_app.controller('infoCtrl', function($scope, $http, $log, $uibModal) {
             $scope.update = function(size, urlinfo) {
@@ -98,7 +99,7 @@
            };
 
         });
-        ```    
+      ```    
   
 7. angular 分页
         
