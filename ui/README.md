@@ -1,10 +1,10 @@
 ## UI学习总结
 
  ###  使用的框架和技术
-   * jquery
-   * bootstrap
-   * angular
-   * angular-ui-bootstrap
+  * jquery
+  * bootstrap
+  * angular
+  * angular-ui-bootstrap
   
  ###  详细说明
   1. bootstrap大屏幕
