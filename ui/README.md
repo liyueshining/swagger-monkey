@@ -1,12 +1,10 @@
 ## UI学习总结
-
- ###  使用的框架和技术
+###  使用的框架和技术
   * jquery
   * bootstrap
   * angular
   * angular-ui-bootstrap
-  
- ###  详细说明
+###  详细说明
   1. bootstrap大屏幕
     
         首页使用大屏幕 突出主题，使用bootstrap css jumbotron
