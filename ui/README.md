@@ -101,15 +101,19 @@
         ```    
   
 7. angular 分页
-        angular uib-pagination 有对分页的默认实现
-        ```html
+        
+      angular uib-pagination 有对分页的默认实现
+        
+      ```html
         <ul uib-pagination  total-items="urlinfos | filter:query | size" ng-model="page.index" max-size="5"
             items-per-page="page.size"
             class="pagination-sm pull-right" boundary-links="true">
         </ul>
-        ```
-        还需要结合自定义的filter实现分页功能：
-        ```javascript
+      ```
+        
+      还需要结合自定义的filter实现分页功能：
+      
+      ```javascript
         info_app.filter('paging', function() {
             var pageSize = 5;
             return function (urlinfos, index, pageSize) {
@@ -130,7 +134,7 @@
                 return urlinfos.length || 0
             }
         });
-        ```
+      ```
         
 
 
