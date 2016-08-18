@@ -15,7 +15,7 @@ This is a python Restful service based on flask.
   ```
   - install falsk by pip
   ```bash
-    pip install flask
+    pip install Flask
   ```
   
   - install falsk-cors by pip
