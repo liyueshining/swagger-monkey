@@ -147,7 +147,7 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-
+@app.cli.command()
 def initdb_command():
     """Initializes the database."""
     init_db()
