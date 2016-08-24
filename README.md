@@ -32,7 +32,7 @@ This is a python Restful service based on flask.
         print('Initialized the database.')
   ```
   
-  THen create initdb.sh or init.bat as follows:  and run it
+  Then create initdb.sh or init.bat as follows:  and run it
   ```bash
     export FLASK_APP=service.py
     or
