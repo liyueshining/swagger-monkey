@@ -1,5 +1,5 @@
 from contextlib import closing
-from flask import Flask, g, jsonify, flash
+from flask import Flask, g, jsonify, flash, url_for
 from flask import request
 from flask_cors import CORS, cross_origin
 import sqlite3
@@ -34,10 +34,19 @@ def urls_post_service():
     try:
         update_db('insert into urlinfos (title, url, description) values (?, ?, ?)',
               [request.json['title'], request.json['url'], request.json['description']])
-        return 'success'
+
+        info = query_db('select * from urlinfos where title = ?', [request.json['title']], one=True)
+        url = {}
+        url['key'] = int(info[0])
+        url['title'] = info[1]
+        url['url'] = info[2]
+        url['description'] = info[3]
+        url['vote'] = int(info[4])
+        return jsonify(url)
     except Exception as e:
         flash(e.message)
         return False
+
 
 @app.route('/urls', methods=['DELETE'])
 def urls_delete_service():
@@ -47,6 +56,7 @@ def urls_delete_service():
     except Exception as e:
         flash(e.args)
         return False
+
 
 @app.route('/url/<int:key>', methods=['GET'])
 def url_get_service(key):
@@ -64,16 +74,29 @@ def url_get_service(key):
         flash(e.args)
         return False
 
+
 @app.route('/url/<int:key>', methods=['PUT'])
 def url_put_service(key):
     try:
         update_db('update urlinfos set title=?, url=?, description=?, vote=? where key = ?',
               [request.json['title'], request.json['url'], request.json['description'],
                request.json['vote'], key])
-        return 'success'
+
+        info = query_db('select * from urlinfos where key = ?', [key], one=True)
+        if info is None:
+            flash('no such urlinfo')
+        else:
+            url = {}
+            url['key'] = int(info[0])
+            url['title'] = info[1]
+            url['url'] = info[2]
+            url['description'] = info[3]
+            url['vote'] = int(info[4])
+        return jsonify(url)
     except Exception as e:
         flash(e.args)
         return False
+
 
 @app.route('/url/<int:key>', methods=['DELETE'])
 def url_delete_service(key):
@@ -83,13 +106,25 @@ def url_delete_service(key):
     except Exception:
         return False
 
+
 @app.route('/votes/<int:key>', methods=['PUT'])
 def url_put_vote_service(key):
     try:
         update_db('update urlinfos set vote = title + 1 where key = ?', [key])
-        return 'success'
-    except Exception:
-        return False
+
+        info = query_db('select * from urlinfos where key = ?', [key], one=True)
+        if info is None:
+            flash('no such urlinfo')
+        else:
+            url = {}
+            url['key'] = int(info[0])
+            url['title'] = info[1]
+            url['url'] = info[2]
+            url['description'] = info[3]
+            url['vote'] = int(info[4])
+        return jsonify(url)
+    except Exception as ex:
+        return ex.message
 
 
 def update_db(update, args):
@@ -146,6 +181,7 @@ def init_db():
         with app.open_resource('schema.sql', mode='r') as f:
             db.cursor().executescript(f.read())
         db.commit()
+
 
 @app.cli.command()
 def initdb_command():
