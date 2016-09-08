@@ -5,6 +5,19 @@ from flask_cors import CORS, cross_origin
 import sqlite3
 from contextlib import closing
 
+import logging
+import logging.config
+import os
+
+LOGGER_CONF_FILE = "logger.conf"
+LOGGER_DATA_DIR = "log"
+
+if os.path.exists(LOGGER_DATA_DIR) is False:
+    os.mkdir(LOGGER_DATA_DIR)
+logging.config.fileConfig(LOGGER_CONF_FILE)
+logger = logging.getLogger("rotatingFile")
+
+
 #configuration
 DATABASE = 'swagger-monkey.db'
 
