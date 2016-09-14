@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+	<title>Swagger Monkey</title>
+    <link rel="shortcut icon"type="image/x-icon" href="paper1.bmp"media="screen" />
+	<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="js/angular-1.5.7/angular.min.js"></script>
+	<script type="text/javascript" src="js/angular-1.5.7/ui-bootstrap-tpls.js"></script>
+
+	<link type="text/css" href="css/bootstrap.min.css" rel="stylesheet">
+	<link type="text/css" href="css/swagger-monkey.css" rel="stylesheet">
+	<link type="text/css" href="css/buttons.css" rel="stylesheet">
+</head>
+<body ng-app="infos" ng-controller="infoCtrl">
+    <div class="jumbotron bluehead" id="level-1">
+    	
+        <img class="inline img-responsive" src="black.jpg" width="150" height="150">
+
+        <div class="container">
+
+            <h1 align="center"><div class="white">Swagger Monkey</div></h1>
+    		
+            <p align="right">
+    		    <a class="btn btn-link" data-toggle="collapse" href="#collapse-container" data-parent="#level-1">
+    		        <span class="white">Add New API</span>
+    		    </a>
+    		</p>
+
+    	</div>
+    </div>
+
+
+    <!--div class="container collapse" id="collapse-container" ng-app="myForm" ng-controller="formCtrl"-->
+    <div class="container collapse" id="collapse-container">
+        <div ng-show="message" ng-model="message">{{message}}</div>
+        <form class="form-horizontal" role="form" name="addForm">
+                        
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">Title</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="title" placeholder="input title" ng-model="urlinfo.title" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="url" class="col-sm-2 control-label">Url</label>
+                <div class="col-sm-10">
+                    <input type="url" class="form-control" name="url" placeholder="input url" ng-model="urlinfo.url" required>                   
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-10">
+                    <textarea type="text" class="form-control" name="description" placeholder="input description" ng-model="urlinfo.description" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success" ng-click="confirm()">Submit</button>
+                </div>
+            </div>
+        </form>
+        <hr>                  
+    </div>                                
+
+
+    <!--div class="container" ng-app="infos" ng-controller="infoCtrl" id="myInfo"-->
+    <div class="container" id="myInfo">    
+        <div class="pagehead">              
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon green">Search:</span>
+                <input type="text" class="form-control" placeholder="Your Restful Info" ng-model="query">
+            </div>
+        </div>
+
+        <ul>
+            <li class="list-item" ng-repeat="urlinfo in urlinfos | filter:query | orderBy:['-vote'] | paging:page.index:page.size">
+                
+                
+	                <div class="clicks">
+	                    <div class="vote">                    
+		                    <div class="mini-counts">
+		                        {{urlinfo.vote}}
+		                    </div>
+		                    <div class="glyphicon glyphicon-hand-up"></div>	                
+		                </div>
+	                </div>
+
+
+	                <div class="content">
+		                <h3>
+		                    {{urlinfo.title}}    
+		                </h3>
+		                <p>     
+		                    <a href="{{urlinfo.url}}" target="_blank" ng-click="addVote(urlinfo)">{{urlinfo.url}}</a> 
+		                </p>   
+		                <p>                      
+		                    {{urlinfo.description}}
+		                </p>
+	                </div> 
+
+                     <div class="operation">
+
+		                <div class="topmargin">      
+		                    <button class="btn btn-success" ng-click="update('lg', urlinfo)">
+		                        <i class="glyphicon glyphicon-edit"></i>
+		                    </button>
+		                </div>
+
+		                <div class="topmargin">      
+		                    <button class="btn btn-danger" ng-click="remove(urlinfo)">    <i class="glyphicon glyphicon-remove"></i>
+		                    </button>
+		                </div>
+
+	                </div>
+
+            </li>
+        </ul>
+
+        <script type="text/ng-template" id="myModalContent.html">  
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Update UrlInfo
+                </h4>
+            </div>
+
+            <div class="modal-body">
+            	<form class='form-horizontal' role='form' name='updateForm'>                        
+                    <div class='form-group'>
+                        <div class='col-sm-10'>
+                            <input type='text' class='form-control' name='title' ng-model='urlinfo.title' required>
+                        </div>     
+                    </div>
+                    <div class='form-group'>
+                        <div class='col-sm-10'>
+                            <input type='text' class='form-control' name='url'  ng-model='urlinfo.url' required>
+                        </div>     
+                    </div>
+                    <div class='form-group'>
+                        <div class='col-sm-10'>
+                            <textarea type='text' class='form-control' name='description'  ng-model='urlinfo.description' rows="2"></textarea>
+                        </div>     
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" ng-click="cancel()">
+                    Close
+                </button>
+                <button class="btn btn-primary" ng-click="ok(urlinfo)">
+                    Update
+                </button>
+            </div>  
+        </script>
+        
+        <div class="row">
+            <div class="col-md-7">
+                <ul uib-pagination  total-items="urlinfos | filter:query | size" ng-model="page.index" max-size="5"
+                    items-per-page="page.size"
+                    class="pagination-sm pull-right" boundary-links="true">
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="site-footer" role="contentinfo">
+            <ul class="site-footer-links">
+                <li class="list-float-left">© 2016 ZTE, Inc.</li>
+                <li class="list-float-left"><a href="#" >Privacy</a></li>
+                <li class="list-float-left"><a href="#" >Security</a></li>
+                <li class="list-float-left"><a href="#" >Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <script>
+        var info_app = angular.module('infos', ['ui.bootstrap']);
+        info_app.controller('infoCtrl', function($scope, $http, $log, $uibModal) {
+
+        	$scope.urlinfo = {}
+        	$scope.message = "";
+            $scope.confirm = function() {
+                $http({
+                    method  : 'POST',
+                    url     : 'http://10.62.57.242:5000/urls',
+                    data    : $scope.urlinfo, 
+                    headers : {'Content-Type': 'application/json'} 
+                })
+                .success(function(data) {
+                	console.log(data);
+                    $scope.urlinfos.splice(0, 0, data);
+                    $scope.urlinfo = {}
+                })
+                .error(function(data) {
+                    $scope.message = data.message;
+                });
+            };
+
+            
+            $scope.page = {
+                size: 5,
+                index: 1
+            };
+
+            $http.get("http://10.62.57.242:5000/urls")
+            .success(function(response) {$scope.urlinfos = response;})
+            .error(function(response) {$scope.urlinfos = []});
+
+            $scope.remove = function(urlinfo) {
+                $http({
+                    method  : 'DELETE',
+                    url     : 'http://10.62.57.242:5000/urls/' + urlinfo.key
+                })
+                .success(function(data) {
+                	$scope.urlinfos.splice($scope.urlinfos.indexOf(urlinfo), 1);
+                })
+                .error(function(data) {
+                	console.log(data);
+                });
+            };
+
+            $scope.addVote = function(urlinfo) {
+                $http({
+                    method  : 'PUT',
+                    url     : 'http://10.62.57.242:5000/votes/' + urlinfo.key,
+                    data    : urlinfo,                    
+                    headers : {'Content-Type': 'application/json'}
+                })
+                .success(function(data) {
+                	var temp = urlinfo;
+                	urlinfo.vote = urlinfo.vote + 1;
+                    $scope.urlinfos.splice($scope.urlinfos.indexOf(temp), 1, urlinfo);
+                })
+                .error(function(data) {
+                	console.log(data);
+                });
+            };
+
+
+            $scope.update = function(size, urlinfo) {
+            	$scope.urlinfo = urlinfo;
+                var modalInstance = $uibModal.open({
+                	templateUrl: 'myModalContent.html',
+                	controller: 'modalInstanceCtrl',
+                	size: size,
+                	resolve: {
+                        urlinfo : function(){return $scope.urlinfo}
+                    }
+                	
+                });
+
+                modalInstance.opened.then(function(){
+                	//function to exec after modal window opened
+                	console.log('modal is opened');
+                });
+
+                modalInstance.result.then(function(result){
+                	console.log(result);
+                }, function(reason){
+                	//点击空白区，总会输出backdrop click,点击取消 则会输出cancel
+                    console.log(reason);
+                    $log.info('Modal dismissed at: ' + new Date());
+                });
+            };
+
+        });
+        
+
+        info_app.filter('paging', function() {
+            var pageSize = 5;
+            return function (urlinfos, index, pageSize) {
+                if (!urlinfos)
+                    return [];
+
+                var offset = (index - 1) * pageSize;
+                return urlinfos.slice(offset, offset + pageSize);
+            }
+        });
+
+        
+        info_app.filter('size', function() {
+            return function (urlinfos) {
+                if (!urlinfos)
+                    return 0;
+
+                return urlinfos.length || 0
+            }
+        });
+
+
+        info_app.controller('modalInstanceCtrl', function ($scope, $http, $uibModalInstance, urlinfo) {
+            $scope.urlinfo = urlinfo;
+            $scope.ok = function (urlinfo) {
+                $http({
+                    method  : 'PUT',
+                    url     : 'http://10.62.57.242:5000/urls/' + $scope.urlinfo.key,
+                    data    : $scope.urlinfo,                    
+                    headers : {'Content-Type': 'application/json'}
+                })
+                .success(function(data) {
+                })
+                .error(function(data) {
+                	console.log(data);
+                });
+
+                $uibModalInstance.dismiss('cancel');
+            };
+
+            $scope.cancel = function () {
+                $uibModalInstance.dismiss('cancel');
+           };
+
+        });
+
+    </script>
+
+    
+</body>
+</html>
